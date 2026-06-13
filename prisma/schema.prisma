@@ -1,13 +1,96 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
 generator client {
-  provider = "prisma-client"
-  output   = "../app/generated/prisma"
+  provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "postgresql"
+}
+
+enum ExerciseTrackingType {
+  WEIGHT_REPS
+  BODYWEIGHT_REPS
+}
+
+model User {
+  id           String  @id @default(cuid())
+  email        String  @unique
+  passwordHash String
+  name         String?
+
+  exercises Exercise[]
+  workouts  Workout[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Exercise {
+  id           String               @id @default(cuid())
+  userId       String
+  name         String
+  category     String?
+  trackingType ExerciseTrackingType @default(WEIGHT_REPS)
+  notes        String?
+
+  user             User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  workoutExercises WorkoutExercise[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, name])
+  @@index([userId])
+}
+
+model Workout {
+  id          String   @id @default(cuid())
+  userId      String
+  title       String
+  performedAt DateTime
+  notes       String?
+
+  user      User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  exercises WorkoutExercise[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([performedAt])
+}
+
+model WorkoutExercise {
+  id         String  @id @default(cuid())
+  workoutId  String
+  exerciseId String
+  orderIndex Int     @default(0)
+  notes      String?
+
+  workout  Workout    @relation(fields: [workoutId], references: [id], onDelete: Cascade)
+  exercise Exercise   @relation(fields: [exerciseId], references: [id], onDelete: Restrict)
+  sets     SetEntry[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([workoutId])
+  @@index([exerciseId])
+}
+
+model SetEntry {
+  id                String @id @default(cuid())
+  workoutExerciseId String
+  setNumber         Int
+
+  weightKg Decimal? @db.Decimal(6, 2)
+  reps     Int
+  rpe      Decimal? @db.Decimal(3, 1)
+  notes    String?
+
+  workoutExercise WorkoutExercise @relation(fields: [workoutExerciseId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([workoutExerciseId])
 }
