@@ -11,6 +11,11 @@ enum ExerciseTrackingType {
   BODYWEIGHT_REPS
 }
 
+enum ExerciseSource {
+  SYSTEM
+  CUSTOM
+}
+
 model User {
   id           String  @id @default(cuid())
   email        String  @unique
@@ -25,21 +30,25 @@ model User {
 }
 
 model Exercise {
-  id           String               @id @default(cuid())
-  userId       String
-  name         String
-  category     String?
-  trackingType ExerciseTrackingType @default(WEIGHT_REPS)
-  notes        String?
+  id             String         @id @default(cuid())
+  userId         String?
+  scope          String
+  name           String
+  normalizedName String
+  category       String?
+  notes          String?
+  source         ExerciseSource @default(CUSTOM)
 
-  user             User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user             User?             @relation(fields: [userId], references: [id], onDelete: Cascade)
   workoutExercises WorkoutExercise[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@unique([userId, name])
+  @@unique([scope, normalizedName])
   @@index([userId])
+  @@index([source])
+  @@index([normalizedName])
 }
 
 model Workout {
