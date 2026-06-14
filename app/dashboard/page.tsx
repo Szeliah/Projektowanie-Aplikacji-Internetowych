@@ -1,10 +1,11 @@
+import Link from 'next/link';
 import { ExerciseSource } from '@prisma/client';
 import { redirect } from 'next/navigation';
 
 import { getCurrentUserId } from '@/lib/auth';
 import { prisma } from '@/lib/db';
 
-import { LogoutButton } from './LogoutButton';
+import { LogoutButton } from '@/components/LogoutButton';
 
 export default async function DashboardPage() {
   const userId = await getCurrentUserId();
@@ -71,7 +72,16 @@ export default async function DashboardPage() {
             </p>
           </div>
 
-          <LogoutButton />
+            <div className="flex items-center gap-3">
+                <Link
+                    className="rounded-lg bg-emerald-500 px-4 py-2 text-sm font-semibold text-zinc-950 transition hover:bg-emerald-400"
+                    href="/workouts"
+                >
+                    Treningi
+                </Link>
+
+                <LogoutButton />
+            </div>
         </header>
 
         <section className="grid gap-4 md:grid-cols-3">
