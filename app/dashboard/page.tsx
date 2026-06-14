@@ -72,7 +72,14 @@ export default async function DashboardPage() {
             </p>
           </div>
 
-            <div className="flex items-center gap-3">
+            <div className="flex flex-wrap items-center gap-3">
+                <Link
+                    className="rounded-lg border border-zinc-700 px-4 py-2 text-sm font-medium text-zinc-200 transition hover:border-emerald-500 hover:text-emerald-300"
+                    href="/exercises"
+                >
+                    Ćwiczenia
+                </Link>
+
                 <Link
                     className="rounded-lg bg-emerald-500 px-4 py-2 text-sm font-semibold text-zinc-950 transition hover:bg-emerald-400"
                     href="/workouts"

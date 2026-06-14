@@ -1,12 +1,12 @@
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 
-import { getCurrentUserId } from '@/lib/auth';
 import { LogoutButton } from '@/components/LogoutButton';
+import { getCurrentUserId } from '@/lib/auth';
 
-import { WorkoutsList } from './WorkoutsList';
+import { ExercisesClient } from './ExercisesClient';
 
-export default async function WorkoutsPage() {
+export default async function ExercisesPage() {
   const userId = await getCurrentUserId();
 
   if (!userId) {
@@ -20,14 +20,14 @@ export default async function WorkoutsPage() {
           <div>
             <p className="text-sm font-medium text-emerald-400">LiftLog</p>
             <h1 className="mt-2 text-3xl font-bold tracking-tight">
-              Treningi
+              Ćwiczenia
             </h1>
             <p className="mt-2 text-sm text-zinc-400">
-              Lista treningów pobierana z endpointu REST /api/workouts.
+              Katalog ćwiczeń systemowych i własnych użytkownika.
             </p>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center gap-3">
             <Link
               className="rounded-lg border border-zinc-700 px-4 py-2 text-sm font-medium text-zinc-200 transition hover:border-emerald-500 hover:text-emerald-300"
               href="/dashboard"
@@ -36,17 +36,17 @@ export default async function WorkoutsPage() {
             </Link>
 
             <Link
-                className="rounded-lg border border-zinc-700 px-4 py-2 text-sm font-medium text-zinc-200 transition hover:border-emerald-500 hover:text-emerald-300"
-                href="/exercises"
+              className="rounded-lg border border-zinc-700 px-4 py-2 text-sm font-medium text-zinc-200 transition hover:border-emerald-500 hover:text-emerald-300"
+              href="/workouts"
             >
-                Ćwiczenia
+              Treningi
             </Link>
 
             <LogoutButton />
           </div>
         </header>
 
-        <WorkoutsList />
+        <ExercisesClient />
       </div>
     </main>
   );
